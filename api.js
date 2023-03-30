@@ -39,6 +39,7 @@ app.get("/comments", (req, res) => {
 // POST a new comment
 app.post("/comments", (req, res) => {
   const { email, commentdate, comment, postid } = req.body;
+  comsole.log(req.body)
   const query = `INSERT INTO comments (email, commentdate, comment, postid) VALUES ('${email}', '${commentdate}', '${comment}', '${postid}')`;
 
   connection.query(query, (err, result) => {
