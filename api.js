@@ -44,7 +44,7 @@ app.post("/comments", (req, res) => {
   connection.query(query, (err, result) => {
     if (err) {
       console.error("Error executing query:", err);
-      res.status(500).send("Error inserting comment into database.");
+      res.status(500).send("Error inserting comment into database.",err);
     } else {
       const newCommentId = result.insertId;
       res
