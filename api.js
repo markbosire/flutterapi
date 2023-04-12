@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 // GET all comments
 app.get("/comments", (req, res) => {
-  const query = "SELECT * FROM comments";
+  const query = "SELECT * FROM comments ORDER BY comment_id DESC";
 
   connection.query(query, (err, results) => {
     if (err) {
