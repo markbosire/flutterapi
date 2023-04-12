@@ -54,6 +54,37 @@ app.post("/comments", (req, res) => {
     }
   });
 });
+app.put("/comments/:id", (req, res) => {
+  const id = req.params.id;
+  const { comment } = req.body;
+  const query = `UPDATE comments SET comment='${comment}' WHERE comment_id=${id}`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).send("Error updating comment in database.");
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Comment with ID ${id} not found.`);
+    } else {
+      res.status(200).send(`Comment with ID ${id} updated successfully!`);
+    }
+  });
+});
+app.delete("/comments/:id", (req, res) => {
+  const id = req.params.id;
+  const query = `DELETE FROM comments WHERE comment_id=${id}`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).send("Error deleting comment from database.");
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Comment with ID ${id} not found.`);
+    } else {
+      res.status(200).send(`Comment with ID ${id} deleted successfully!`);
+    }
+  });
+});
 
 // Start the server
 app.listen(port, () => {
