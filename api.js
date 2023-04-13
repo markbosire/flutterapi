@@ -101,7 +101,14 @@ app.post('/likes', (req, res) => {
     res.send(`New like added with ID: ${results.insertId}`);
   });
 });
-
+// DELETE endpoint to remove a like based on its ID
+app.delete('/likes/:id', (req, res) => {
+  const id = req.params.id;
+  pool.query('DELETE FROM likes WHERE likes_id = ?', [id], (error, results, fields) => {
+    if (error) throw error;
+    res.send(`Like with ID ${id} deleted.`);
+  });
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
