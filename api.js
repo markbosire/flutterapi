@@ -86,29 +86,52 @@ app.delete("/comments/:id", (req, res) => {
   });
 });
 // GET endpoint to retrieve all likes
+// GET endpoint to retrieve all likes
 app.get('/likes', (req, res) => {
-  pool.query('SELECT * FROM likes', (error, results, fields) => {
-    if (error) throw error;
-    res.send(results);
+  const query = 'SELECT * FROM likes';
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).send("Error retrieving likes from database.");
+    } else {
+      res.status(200).send(result);
+    }
   });
 });
 
 // POST endpoint to add a new like
 app.post('/likes', (req, res) => {
   const { post_id, email } = req.body;
-  pool.query('INSERT INTO likes (post_id, email) VALUES (?, ?)', [post_id, email], (error, results, fields) => {
-    if (error) throw error;
-    res.send(`New like added with ID: ${results.insertId}`);
+  const query = `INSERT INTO likes (post_id, email) VALUES (?, ?)`;
+
+  connection.query(query, [post_id, email], (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).send("Error adding like to database.");
+    } else {
+      res.status(201).send(`New like added with ID: ${result.insertId}`);
+    }
   });
 });
+
 // DELETE endpoint to remove a like based on its ID
 app.delete('/likes/:id', (req, res) => {
   const id = req.params.id;
-  pool.query('DELETE FROM likes WHERE likes_id = ?', [id], (error, results, fields) => {
-    if (error) throw error;
-    res.send(`Like with ID ${id} deleted.`);
+  const query = `DELETE FROM likes WHERE likes_id=${id}`;
+
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      res.status(500).send("Error deleting like from database.");
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Like with ID ${id} not found.`);
+    } else {
+      res.status(200).send(`Like with ID ${id} deleted successfully!`);
+    }
   });
 });
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
