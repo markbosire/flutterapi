@@ -103,9 +103,9 @@ app.get('/likes', (req, res) => {
 // POST endpoint to add a new like
 app.post('/likes', (req, res) => {
   const { post_id, email } = req.body;
-  const query = `INSERT INTO likes (post_id, email) VALUES (?, ?)`;
+  const query = `INSERT INTO likes (post_id, email) VALUES ('${post_id}', '${email}')`;
 
-  connection.query(query, [post_id, email], (err, result) => {
+  connection.query(query, (err, result) => {
     if (err) {
       console.error("Error executing query:", err);
       res.status(500).send("Error adding like to database.");
@@ -114,6 +114,7 @@ app.post('/likes', (req, res) => {
     }
   });
 });
+
 
 // DELETE endpoint to remove a like based on its ID
 app.delete('/likes/:id', (req, res) => {
