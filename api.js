@@ -85,6 +85,22 @@ app.delete("/comments/:id", (req, res) => {
     }
   });
 });
+// GET endpoint to retrieve all likes
+app.get('/likes', (req, res) => {
+  pool.query('SELECT * FROM likes', (error, results, fields) => {
+    if (error) throw error;
+    res.send(results);
+  });
+});
+
+// POST endpoint to add a new like
+app.post('/likes', (req, res) => {
+  const { post_id, email } = req.body;
+  pool.query('INSERT INTO likes (post_id, email) VALUES (?, ?)', [post_id, email], (error, results, fields) => {
+    if (error) throw error;
+    res.send(`New like added with ID: ${results.insertId}`);
+  });
+});
 
 // Start the server
 app.listen(port, () => {
